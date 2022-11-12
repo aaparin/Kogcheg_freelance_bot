@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
-class ServicesModel extends Model
+class Services extends Model
 {
     use HasFactory;
-    use AsSource;
+    use AsSource, Filterable, Attachable;
 
     protected $table = 'services';
 
@@ -18,6 +20,16 @@ class ServicesModel extends Model
         'parent_id',
         'sort',
         'user_show'
+    ];
+    protected $allowedFilters = [
+        'name',
+        'parent_id'
+    ];
+
+    protected $allowedSorts = [
+        'id',
+        'parent_id',
+        'sorts'
     ];
 
     public function getName($parentID)

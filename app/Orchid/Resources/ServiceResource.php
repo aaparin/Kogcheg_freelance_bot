@@ -3,28 +3,33 @@
 namespace App\Orchid\Resources;
 
 use App\Models\Places;
-use App\Models\Services;
-use App\Orchid\Filters\PlacesFilter;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
 use Orchid\Crud\ResourceRequest;
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Relation;
 use Orchid\Screen\TD;
+use App\Models\Services;
+use Orchid\Support\Facades\Layout;
 
-class PlacesResource extends Resource
+class ServiceResource extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = Places::class;
+
+    public static $model = Services::class;
+
 
     public static function label(): string
     {
-        return 'Местоположения';
+        return 'Услуги';
     }
 
     public static function createButtonLabel(): string
@@ -34,7 +39,7 @@ class PlacesResource extends Resource
 
     public static function icon(): string
     {
-        return 'globe';
+        return 'directions';
     }
 
     /**
@@ -45,20 +50,24 @@ class PlacesResource extends Resource
     public function fields(): array
     {
         return [
+
             Input::make('name')
-                ->title('Название места')
-                ->required(),
+                ->title('Название')
+                ->placeholder('Название услуги'),
             Input::make('sort')
-                ->title('Сортировка')
                 ->type('number')
-                ->value(0)
-                ->required(),
+                ->title('Сортировка'),
+            CheckBox::make('user_show')
+                ->sendTrueOrFalse(true)
+                ->title('Показывать пользователю')
+                ->placeholder('Да'),
+
             Relation::make('parent_id')
                 ->title('Родительский раздел')
-                ->fromModel(Places::class, 'name')
+                ->fromModel(Services::class, 'name')
+
         ];
     }
-
 
     /**
      * Get the columns displayed by the resource.
@@ -68,18 +77,23 @@ class PlacesResource extends Resource
     public function columns(): array
     {
         return [
-            TD::make('id')->sort(),
-            TD::make('name', 'Название')->sort()->cantHide(),
-            TD::make('sort', 'Сортировка')->sort(),
+            TD::make('id', 'ID'),
+            TD::make('name', 'Название')
+                ->sort()
+                ->render(function (Services $service) {
+                    return Link::make($service->name)
+                        ->route('platform.services.edit', $service);
+                }),
             TD::make('parent_id', 'Родитель')
                 ->filter(
                     Relation::make('parent_id')
                         ->title('Родительский раздел')
-                        ->fromModel(Places::class, 'name')
+                        ->fromModel(Services::class, 'name')
                 )
-                ->render(function ($model) {
-                    return $model->getName($model->parent_id);
+                ->render(function ($service) {
+                    return $service->getName($service->parent_id);
                 }),
+            TD::make('command', 'Команда запуска')
         ];
     }
 
@@ -101,8 +115,7 @@ class PlacesResource extends Resource
     public function filters(): array
     {
         return [
-            // PlacesFilter::class,
-            //new DefaultSorted('id', 'asc')
+            new DefaultSorted('sort', 'asc'),
         ];
     }
 

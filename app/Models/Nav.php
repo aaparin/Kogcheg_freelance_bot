@@ -8,13 +8,17 @@ use Orchid\Attachment\Attachable;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
 
-class Places extends Model
+class Nav extends Model
 {
-    use HasFactory;
-    use AsSource, Filterable, Attachable;
+    use HasFactory, AsSource, Filterable, Attachable;
 
-    protected $table = 'places';
+    protected $table = 'navi';
 
+    protected $fillable = [
+        'name',
+        'parent_id',
+        'active'
+    ];
     protected $allowedFilters = [
         'name',
         'parent_id'
@@ -23,7 +27,6 @@ class Places extends Model
     protected $allowedSorts = [
         'id',
         'parent_id',
-        'sorts'
     ];
 
     public function getName($parentID)

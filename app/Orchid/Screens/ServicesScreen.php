@@ -2,7 +2,7 @@
 
 namespace App\Orchid\Screens;
 
-use App\Models\ServicesModel;
+use App\Models\Services;
 use App\Orchid\Layouts\ServicesLayout;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
@@ -17,8 +17,8 @@ class ServicesScreen extends Screen
     public function query(): iterable
     {
         return [
-            'services' => ServicesModel::paginate(),
-            'service' => ServicesModel::find(1)
+            'services' => Services::paginate(),
+            'service' => Services::find(1)
         ];
     }
 

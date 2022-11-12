@@ -2,7 +2,7 @@
 
 namespace App\Orchid\Layouts;
 
-use App\Models\ServicesModel;
+use App\Models\Services;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
@@ -32,7 +32,7 @@ class ServicesLayout extends Table
             TD::make('id', 'ID'),
             TD::make('name', 'Название')
                 ->sort()
-                ->render(function (ServicesModel $service) {
+                ->render(function (Services $service) {
                     return Link::make($service->name)
                         ->route('platform.services.edit', $service);
                 }),

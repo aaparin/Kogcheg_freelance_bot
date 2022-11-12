@@ -2,7 +2,7 @@
 
 namespace App\Orchid\Screens;
 
-use App\Models\ServicesModel;
+use App\Models\Services;
 use Illuminate\Http\Request;
 use Orchid\Support\Facades\Alert;
 use Orchid\Screen\Actions\Button;
@@ -16,7 +16,7 @@ class ServicesEditScreen extends Screen
 {
 
     /**
-     * @var ServicesModel
+     * @var Services
      */
     public $service;
 
@@ -25,7 +25,7 @@ class ServicesEditScreen extends Screen
      *
      * @return array
      */
-    public function query(ServicesModel $service): array
+    public function query(Services $service): array
     {
         return [
             'service' => $service
@@ -97,7 +97,7 @@ class ServicesEditScreen extends Screen
 
                 Relation::make('services.parent_id')
                     ->title('Родительский раздел')
-                    ->fromModel(ServicesModel::class, 'name', '')
+                    ->fromModel(Services::class, 'name', '')
 
 //                Quill::make('post.body')
 //                    ->title('Main text'),
@@ -106,7 +106,7 @@ class ServicesEditScreen extends Screen
         ];
     }
 
-    public function createOrUpdate(ServicesModel $servicesModel, Request $request)
+    public function createOrUpdate(Services $servicesModel, Request $request)
     {
         $dataArray = $request->get('services');
         if (is_null($dataArray['parent_id'])) {
@@ -126,7 +126,7 @@ class ServicesEditScreen extends Screen
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
-    public function remove(ServicesModel $servicesModel)
+    public function remove(Services $servicesModel)
     {
         $servicesModel->delete();
 

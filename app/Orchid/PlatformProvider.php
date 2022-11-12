@@ -29,10 +29,10 @@ class PlatformProvider extends OrchidServiceProvider
     {
         return [
 
-            Menu::make('Услуги')
-                ->title('Сервисы')
-                ->icon('directions')
-                ->route('platform.services'),
+//            Menu::make('Услуги')
+//                ->title('Сервисы')
+//                ->icon('directions')
+//                ->route('platform.services'),
 
 //            Menu::make('Местоположения')
 //                ->icon('globe')
@@ -94,11 +94,11 @@ class PlatformProvider extends OrchidServiceProvider
 //                    return Dashboard::version();
 //                }, Color::DARK()),
 
-            Menu::make(__('Users'))
+            Menu::make(__('Пользователи'))
                 ->icon('user')
                 ->route('platform.systems.users')
                 ->permission('platform.systems.users')
-                ->title(__('Access rights')),
+                ->title(__('Права доступа')),
 
 //            Menu::make(__('Roles'))
 //                ->icon('lock')

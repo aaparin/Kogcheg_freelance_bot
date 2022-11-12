@@ -2,29 +2,28 @@
 
 namespace App\Orchid\Resources;
 
-use App\Models\Places;
+use App\Models\Nav;
 use App\Models\Services;
-use App\Orchid\Filters\PlacesFilter;
-use Illuminate\Database\Eloquent\Model;
-use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
-use Orchid\Crud\ResourceRequest;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Relation;
+use Orchid\Screen\Fields\TextArea;
 use Orchid\Screen\TD;
 
-class PlacesResource extends Resource
+class NavResource extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
      * @var string
      */
-    public static $model = Places::class;
+    public static $model = Nav::class;
+
 
     public static function label(): string
     {
-        return 'Местоположения';
+        return 'Навигация';
     }
 
     public static function createButtonLabel(): string
@@ -34,7 +33,7 @@ class PlacesResource extends Resource
 
     public static function icon(): string
     {
-        return 'globe';
+        return 'menu';
     }
 
     /**
@@ -45,20 +44,26 @@ class PlacesResource extends Resource
     public function fields(): array
     {
         return [
+
             Input::make('name')
-                ->title('Название места')
-                ->required(),
-            Input::make('sort')
-                ->title('Сортировка')
-                ->type('number')
-                ->value(0)
-                ->required(),
+                ->title('Название')
+                ->placeholder('Название'),
+            TextArea::make('description')
+                ->title('Текст для пользователя'),
+            Input::make('command')
+                ->title('Команда'),
+            CheckBox::make('active')
+                ->sendTrueOrFalse(true)
+                ->checked()
+                ->title('Показывать пользователю')
+                ->placeholder('Да'),
             Relation::make('parent_id')
                 ->title('Родительский раздел')
-                ->fromModel(Places::class, 'name')
+                ->fromModel(Nav::class, 'name')
+
+
         ];
     }
-
 
     /**
      * Get the columns displayed by the resource.
@@ -68,18 +73,28 @@ class PlacesResource extends Resource
     public function columns(): array
     {
         return [
-            TD::make('id')->sort(),
-            TD::make('name', 'Название')->sort()->cantHide(),
-            TD::make('sort', 'Сортировка')->sort(),
+            TD::make('id', 'ID'),
+            TD::make('name', 'Название'),
+            TD::make('command', 'Команда'),
             TD::make('parent_id', 'Родитель')
                 ->filter(
                     Relation::make('parent_id')
                         ->title('Родительский раздел')
-                        ->fromModel(Places::class, 'name')
+                        ->fromModel(Nav::class, 'name')
                 )
-                ->render(function ($model) {
-                    return $model->getName($model->parent_id);
+                ->render(function ($service) {
+                    return $service->getName($service->parent_id);
                 }),
+
+//            TD::make('created_at', 'Date of creation')
+//                ->render(function ($model) {
+//                    return $model->created_at->toDateTimeString();
+//                }),
+//
+//            TD::make('updated_at', 'Update date')
+//                ->render(function ($model) {
+//                    return $model->updated_at->toDateTimeString();
+//                }),
         ];
     }
 
@@ -100,21 +115,6 @@ class PlacesResource extends Resource
      */
     public function filters(): array
     {
-        return [
-            // PlacesFilter::class,
-            //new DefaultSorted('id', 'asc')
-        ];
-    }
-
-    public function onSave(ResourceRequest $request, Model $model)
-    {
-        /**
-         * Hack for zero structure
-         */
-        $dataArray = $request->all();
-        if (is_null($dataArray['parent_id'])) {
-            $dataArray['parent_id'] = 0;
-        }
-        $model->forceFill($dataArray)->save();
+        return [];
     }
 }
